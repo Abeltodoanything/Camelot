@@ -4,4 +4,10 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "customtkinter>=5.2.2",
+    "dotenv>=0.9.9",
+    "openai>=1.85.0",
+    "playwright>=1.52.0",
+    "ttkbootstrap>=1.13.10",
+]
