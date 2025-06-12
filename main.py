@@ -1,7 +1,7 @@
+import os
 import tkinter as tk
 import ttkbootstrap as ttk
 import customtkinter as ctk
-import os
 from dotenv import load_dotenv 
 from playwright.sync_api import sync_playwright
 from openai import OpenAI
@@ -11,6 +11,8 @@ load_dotenv()
 client = OpenAI(
     base_url=os.getenv("BASE_URL"),
     api_key=os.getenv("API_KEY"))
+
+
 
 window = ttk.Window(themename='darkly')
 window.attributes('-topmost', True)
@@ -28,8 +30,26 @@ top = int(comp_height /2 - window_height /2)
 
 window.geometry(f'{window_width}x{window_height}+{left}+{top}')
 
-def ask_ai():
-    pass
+def ask_ai(question, options):
+    prompt = f"""
+    Carefully read the following question and answer options. Provide the correct answer based on historical facts or logical reasoning.
+
+    Question: {question}
+    Options:
+    """ + "\n".join([f"{i+1}. {opt}" for i, opt in enumerate(options)]) + """
+
+    Instructions:
+    - Respond with the exact full text of the correct answer.
+    - Do not give any numbers, letters, or extra commentary.
+    - Make sure your response exactly matches one of the options above.
+    """
+
+    completion = client.chat.completions.create(
+        model="openrouter.ai/google/gemini-2.0-flash-exp:free",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return completion.choices[0].message.content.strip()
+
 
 def start_script():
     with sync_playwright() as playwright:
@@ -117,5 +137,5 @@ output_box = ctk.CTkTextbox(end_frame,height=450,width= 730, font=("Consolas", 1
 output_box._textbox.configure(wrap='word', state='disabled')
 output_box.pack()
 
-# run
+# run heh
 window.mainloop()
