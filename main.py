@@ -1,42 +1,10 @@
-# READ
-# Before running the code, make a .env file and add your BASE_URL and your API_KEY
-# The file should contain two lines
-# BASE_URL={url}
-# API_KEY={API Key}
-# For api keys visit https://openrouter.ai
-
 import os
 import tkinter as tk
 import ttkbootstrap as ttk
-import customtkinter as ctk
 from dotenv import load_dotenv 
 from playwright.sync_api import sync_playwright
 from openai import OpenAI
-
-load_dotenv()
-
-client = OpenAI(
-    base_url=os.getenv("BASE_URL"),
-    api_key=os.getenv("API_KEY"))
-
-
-
-window = ttk.Window(themename='darkly')
-window.attributes('-topmost', True)
-window.title("Lounge Lizard")
-window.resizable(False,False)
-window.bind('<Escape>', lambda event: window.quit())
-
-window_width = 505
-window_height = 740
-comp_width = window.winfo_screenwidth()
-comp_height = window.winfo_screenheight()
-
-left = int(comp_width /2 - window_width /2)
-top = int(comp_height /2 - window_height /2)
-
-window.geometry(f'{window_width}x{window_height}+{left}+{top}')
-
+import sv_ttk
 def ask_ai(question, options):
     prompt = f"""
     Carefully read the following question and answer options. Provide the correct answer based on historical facts or logical reasoning.
@@ -52,12 +20,10 @@ def ask_ai(question, options):
     """
 
     completion = client.chat.completions.create(
-        model="openrouter.ai/google/gemini-2.0-flash-exp:free",
+        model="openrouter.ai/google/gemini-2.0-flash-exp:free", # Replace the url with the model you are using.
         messages=[{"role": "user", "content": prompt}]
     )
     return completion.choices[0].message.content.strip()
-
-
 def start_script():
     with sync_playwright() as playwright:
         run(playwright)
@@ -92,20 +58,48 @@ def run(playwright):
     context.close()
     browser.close()
 
+load_dotenv()
+
+client = OpenAI(
+    base_url=os.getenv("BASE_URL"),
+    api_key=os.getenv("API_KEY"))
+
+
+
+window = ttk.Window()
+window.attributes('-topmost', True)
+window.title("Lounge Lizard")
+window.resizable(False,False)
+window.bind('<Escape>', lambda event: window.quit())
+
+window_width = 505
+window_height = 740
+comp_width = window.winfo_screenwidth()
+comp_height = window.winfo_screenheight()
+
+left = int(comp_width /2 - window_width /2)
+top = int(comp_height /2 - window_height /2)
+
+window.geometry(f'{window_width}x{window_height}+{left}+{top}')
+
+bg_frame = ttk.Frame(window)
+bg_frame.pack(fill="both", expand=True)
+
+
 # Notebook
-notebook = ttk.Notebook(window)
+notebook = ttk.Notebook(bg_frame)
 notebook.pack(anchor='nw', padx=2)
 quizbot = ttk.Frame(notebook)
-tab2 = ttk.Frame(notebook)
+chatbot = ttk.Frame(notebook)
 notebook.add(quizbot, text= 'QuizBot')
-notebook.add(tab2, text= 'tab 2')
+notebook.add(chatbot, text= 'Chat bot')
 
 # Variables
 cvs_usr = ttk.StringVar()
 cvs_pas = ttk.StringVar()
 cvs_link = ttk.StringVar()
 qtn_num = ttk.IntVar(value=10)
-display_output = ctk.StringVar()
+display_output = ttk.StringVar()
 
 # Title
 title = ttk.Label(quizbot, text= 'C.Q.B.v2', font=("Helvetica", 20, 'bold' ))
@@ -145,13 +139,49 @@ ques_entry.grid(column=1, row=1,pady=10, padx=10)
 # Start & Output
 end_frame = ttk.Frame(quizbot)
 end_frame.pack(pady=5, padx=10)
-start_btn = ctk.CTkButton(end_frame, text='Start', command= start_script)
+start_btn = ttk.Button(end_frame, text='Start', command= start_script)
 start_btn.pack(pady=10)
 
-output_box = ctk.CTkTextbox(end_frame,height=450,width= 730, font=("Consolas", 12), activate_scrollbars=True)
-output_box._textbox.configure(wrap='word', state='disabled')
+output_box = ttk.Text(end_frame,height=450,width= 730, font=("Consolas", 12),wrap='word', state='disabled')
 output_box.pack()
 
+# Chatbot
+tabframe = ttk.Frame(chatbot)
+tabframe.pack(expand=True, fill='both')
 
+# tabframe.columnconfigure(0, weight=1)
+# tabframe.columnconfigure(1, weight=1)
+# tabframe.rowconfigure(0, weight=1)
+# tabframe.rowconfigure(1, weight=1)
+
+# test1 = ttk.Labelframe(tabframe, borderwidth=1, relief='solid', text='Sign in')
+# test1.grid(column=0, row=0, sticky='nsew',padx=5, pady=5 )
+
+# test2 = ttk.Labelframe(tabframe, borderwidth=1, relief='solid', text='Sign in')
+# test2.grid(column=1, row=0, sticky='nsew',padx=5, pady=5 )
+
+# test3 = ttk.Labelframe(tabframe, borderwidth=1, relief='solid', text='Sign in')
+# test3.grid(column=0, row=1, sticky='nsew',padx=5, pady=5 )
+
+# test4 = ttk.Labelframe(tabframe, borderwidth=1, relief='solid', text='Sign in')
+# test4.grid(column=1, row=1, sticky='nsew',padx=5, pady=5 )
+
+cb_output = ttk.Text(tabframe, font=("Consolas", 12), wrap='word', state='disabled')
+cb_output.pack()
+
+cb_frame = ttk.Frame(tabframe)
+cb_frame.pack(pady=10, padx=5)
+cb_frame.columnconfigure(0)
+cb_frame.columnconfigure(1)
+cb_frame.rowconfigure(0)
+
+cb_question = ttk.Entry(cb_frame, width=45)
+cb_question.grid(column=0,row=0, padx=5)
+
+cb_submit = ttk.Button(cb_frame, text='Send')
+cb_submit.grid(column=1,row=0,)
+# add options to choose different AI's
 # run heh
+
+sv_ttk.set_theme('dark')
 window.mainloop()
