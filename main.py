@@ -1,3 +1,10 @@
+# READ
+# Before running the code, make a .env file and add your BASE_URL and your API_KEY
+# The file should contain two lines
+# BASE_URL={url}
+# API_KEY={API Key}
+# For free api keys visit https://openrouter.ai
+
 import os
 import tkinter as tk
 import ttkbootstrap as ttk
