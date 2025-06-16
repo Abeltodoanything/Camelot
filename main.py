@@ -4,7 +4,23 @@ import ttkbootstrap as ttk
 from dotenv import load_dotenv 
 from playwright.sync_api import sync_playwright
 from openai import OpenAI
-import sv_ttk
+
+
+def cb_ai():
+    prompt = cb_question_entry.get()
+
+    completion = client.chat.completions.create(
+        model=f"{selected_ai.get()}",
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    response = completion.choices[0].message.content.strip()
+
+    cb_output.config(state='normal')
+    cb_output.delete("1.0", "end")
+    cb_output.insert("end", response)
+    cb_output.config(state='disabled')
+
 def ask_ai(question, options):
     prompt = f"""
     Carefully read the following question and answer options. Provide the correct answer based on historical facts or logical reasoning.
@@ -20,7 +36,7 @@ def ask_ai(question, options):
     """
 
     completion = client.chat.completions.create(
-        model="openrouter.ai/google/gemini-2.0-flash-exp:free", # Replace the url with the model you are using.
+        model="deepseek/deepseek-chat-v3-0324:free", # Replace the url with the model you are using.
         messages=[{"role": "user", "content": prompt}]
     )
     return completion.choices[0].message.content.strip()
@@ -64,9 +80,11 @@ client = OpenAI(
     base_url=os.getenv("BASE_URL"),
     api_key=os.getenv("API_KEY"))
 
+ai_models = ['deepseek/deepseek-chat-v3-0324:free', 'google/gemini-2.0-flash-exp:free', 'mistralai/devstral-small:free']
 
-
-window = ttk.Window()
+window = ttk.Window(themename='darkly')
+window_icon = ttk.PhotoImage(file='icons/dragon.png')
+window.iconphoto(True, window_icon)
 window.attributes('-topmost', True)
 window.title("Lounge Lizard")
 window.resizable(False,False)
@@ -146,42 +164,32 @@ output_box = ttk.Text(end_frame,height=450,width= 730, font=("Consolas", 12),wra
 output_box.pack()
 
 # Chatbot
+# Variables
+cb_question_entry = ttk.StringVar()
+selected_ai = ttk.StringVar()
+
 tabframe = ttk.Frame(chatbot)
 tabframe.pack(expand=True, fill='both')
 
-# tabframe.columnconfigure(0, weight=1)
-# tabframe.columnconfigure(1, weight=1)
-# tabframe.rowconfigure(0, weight=1)
-# tabframe.rowconfigure(1, weight=1)
-
-# test1 = ttk.Labelframe(tabframe, borderwidth=1, relief='solid', text='Sign in')
-# test1.grid(column=0, row=0, sticky='nsew',padx=5, pady=5 )
-
-# test2 = ttk.Labelframe(tabframe, borderwidth=1, relief='solid', text='Sign in')
-# test2.grid(column=1, row=0, sticky='nsew',padx=5, pady=5 )
-
-# test3 = ttk.Labelframe(tabframe, borderwidth=1, relief='solid', text='Sign in')
-# test3.grid(column=0, row=1, sticky='nsew',padx=5, pady=5 )
-
-# test4 = ttk.Labelframe(tabframe, borderwidth=1, relief='solid', text='Sign in')
-# test4.grid(column=1, row=1, sticky='nsew',padx=5, pady=5 )
-
-cb_output = ttk.Text(tabframe, font=("Consolas", 12), wrap='word', state='disabled')
-cb_output.pack()
+cb_output = ttk.Text(tabframe, font=("Helvetica", 12), wrap='word', state='disabled', foreground='white')
+cb_output.pack(padx=5, pady=5)
 
 cb_frame = ttk.Frame(tabframe)
 cb_frame.pack(pady=10, padx=5)
-cb_frame.columnconfigure(0)
-cb_frame.columnconfigure(1)
-cb_frame.rowconfigure(0)
+cb_frame.columnconfigure(0, weight=1)
+cb_frame.columnconfigure(1, weight=1)
+cb_frame.rowconfigure(0, weight=1)
+cb_frame.rowconfigure(1, weight=1)
 
-cb_question = ttk.Entry(cb_frame, width=45)
-cb_question.grid(column=0,row=0, padx=5)
+cb_question = ttk.Entry(cb_frame, width=45, textvariable=cb_question_entry)
+cb_question.grid(column=0, row=0, padx=5)
 
-cb_submit = ttk.Button(cb_frame, text='Send')
-cb_submit.grid(column=1,row=0,)
-# add options to choose different AI's
-# run heh
+cb_submit = ttk.Button(cb_frame, text='Send', command=cb_ai)
+cb_submit.grid(column=1, row=0)
 
-sv_ttk.set_theme('dark')
+ai_options = ttk.Combobox(cb_frame, textvariable=selected_ai, values=ai_models, state="readonly")
+ai_options.grid(column=0, row=1, padx=5, pady=5, sticky='w')
+ai_options.current(0)
+
+
 window.mainloop()
