@@ -3,7 +3,7 @@
 # The file should contain two lines
 # BASE_URL={url}
 # API_KEY={API Key}
-# For free api keys visit https://openrouter.ai
+# For api keys visit https://openrouter.ai
 
 import os
 import tkinter as tk
@@ -23,7 +23,7 @@ client = OpenAI(
 
 window = ttk.Window(themename='darkly')
 window.attributes('-topmost', True)
-window.title("CQBv2")
+window.title("Lounge Lizard")
 window.resizable(False,False)
 window.bind('<Escape>', lambda event: window.quit())
 
@@ -92,18 +92,26 @@ def run(playwright):
     context.close()
     browser.close()
 
+# Notebook
+notebook = ttk.Notebook(window)
+notebook.pack(anchor='nw', padx=2)
+quizbot = ttk.Frame(notebook)
+tab2 = ttk.Frame(notebook)
+notebook.add(quizbot, text= 'QuizBot')
+notebook.add(tab2, text= 'tab 2')
+
 # Variables
 cvs_usr = ttk.StringVar()
 cvs_pas = ttk.StringVar()
 cvs_link = ttk.StringVar()
-qtn_num = ttk.IntVar()
+qtn_num = ttk.IntVar(value=10)
 display_output = ctk.StringVar()
 
 # Title
-title = ttk.Label(window, text= 'C.Q.B.v2', font=("Helvetica", 20, 'bold' ))
+title = ttk.Label(quizbot, text= 'C.Q.B.v2', font=("Helvetica", 20, 'bold' ))
 title.pack(pady=10, padx=10, anchor='nw')
 # Sign in Frame
-sign_in = ttk.Labelframe(window, borderwidth=1, relief='solid', text='Sign in')
+sign_in = ttk.Labelframe(quizbot, borderwidth=1, relief='solid', text='Sign in')
 sign_in.pack(pady=10, padx=10, anchor='nw', fill='x')
 
 # Canvas Username
@@ -121,7 +129,7 @@ pas_entry = ttk.Entry(sign_in, show='*', textvariable=cvs_pas)
 pas_entry.grid(column=1, row=2,pady=10, padx=10)
 
 # Quiz Information Frame
-quiz_info = ttk.Labelframe(window, borderwidth=1, relief='solid', text= 'Quiz information')
+quiz_info = ttk.Labelframe(quizbot, borderwidth=1, relief='solid', text= 'Quiz information')
 quiz_info.pack(padx=10, anchor='nw', fill='x')
 # Link & number of questions
 link_title = ttk.Label(quiz_info, text='URL to Canvas Quiz')
@@ -135,7 +143,7 @@ ques_entry = ttk.Spinbox(quiz_info, from_=0, to=50, textvariable=qtn_num)
 ques_entry.grid(column=1, row=1,pady=10, padx=10)
 
 # Start & Output
-end_frame = ttk.Frame(window)
+end_frame = ttk.Frame(quizbot)
 end_frame.pack(pady=5, padx=10)
 start_btn = ctk.CTkButton(end_frame, text='Start', command= start_script)
 start_btn.pack(pady=10)
@@ -143,6 +151,7 @@ start_btn.pack(pady=10)
 output_box = ctk.CTkTextbox(end_frame,height=450,width= 730, font=("Consolas", 12), activate_scrollbars=True)
 output_box._textbox.configure(wrap='word', state='disabled')
 output_box.pack()
+
 
 # run heh
 window.mainloop()
