@@ -1,4 +1,4 @@
-# C.Q.B.v2
+# Lounge Lizard
 
 ## 📦 Installation Guide
 
