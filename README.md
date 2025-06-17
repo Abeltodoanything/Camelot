@@ -25,7 +25,7 @@ Before running the code, make a .env file and add your BASE_URL and your API_KEY
  BASE_URL={url}
  API_KEY={API Key}
  ```
-For api keys i recomend https://openrouter.ai
+For api keys, I recommend https://openrouter.ai
 
 ### 4. Run the code with uv
 ```bash
