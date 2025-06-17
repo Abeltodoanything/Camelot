@@ -19,7 +19,7 @@ cd lounge-lizard
 ```bash
 pip install uv
 ```
-### 5. Create a .env
+### 3. Create a .env
 Before running the code, make a .env file and add your BASE_URL and your API_KEY. The file should contain two lines.
 ```bash
  BASE_URL={url}
