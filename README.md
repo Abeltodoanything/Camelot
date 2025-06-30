@@ -1,4 +1,4 @@
-# Lounge Lizard
+# Camelot
 
 ## 📦 Installation Guide
 
