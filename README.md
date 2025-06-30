@@ -8,11 +8,11 @@ Follow these steps to set up the project locally.
 
 To get started, clone the repository to your local machine using the following command:
 ```bash
-git clone https://github.com/Abeltodoanything/lounge-lizard.git 
+git clone https://github.com/Abeltodoanything/Camelot.git 
 ```
 Then navigate into the project directory:
 ```bash
-cd lounge-lizard
+cd Camelot
 ```
 ### 2. Install uv with this command
 
